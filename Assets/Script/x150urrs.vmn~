@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+
+public class TutorialDisplay : MonoBehaviour
+{
+    [SerializeField]
+    private List<Tutorial> tutorials = new();
+
+    [SerializeField]
+    private TMP_Text titleDisplay, descriptionDisplay;
+
+    private int Index = 0;
+
+    public void Next()
+    {
+        MoveToIndex(++Index);
+    }
+
+    public void Previous()
+    {
+        MoveToIndex(--Index);
+    }
+
+    private void MoveToIndex(int index)
+    {
+        int count = tutorials.Count;
+        if (count > 0 && index < count - 1 && index >= 0)
+        {
+            Tutorial tutorial = tutorials[index];
+            titleDisplay.SetText(tutorial.title);
+            descriptionDisplay.SetText(tutorial.description);
+        }
+        else
+        {
+            titleDisplay.SetText("Tutorial");
+            descriptionDisplay.SetText("-");
+        }
+    }
+}

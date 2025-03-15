@@ -1,0 +1,91 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class TutorialDisplay : MonoBehaviour
+{
+    [SerializeField]
+    private List<Tutorial> tutorials = new();
+
+    [SerializeField]
+    private TMP_Text titleDisplay, descriptionDisplay;
+    [SerializeField]
+    private Button previousButton, nextButton, closeButton;
+
+    private int _index = 0;
+    private int Index
+    {
+        get => Mathf.Clamp(_index, 0, tutorials.Count - 1);
+        set => _index = Mathf.Clamp(value, 0, tutorials.Count - 1);
+    }
+
+    private void OnEnable()
+    {
+        if (previousButton != null)
+        {
+            previousButton.onClick.AddListener(Previous);
+        }
+        if (nextButton != null)
+        {
+            nextButton.onClick.AddListener(Next);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (previousButton != null)
+        {
+            previousButton.onClick.RemoveListener(Previous);
+        }
+        if (nextButton != null)
+        {
+            nextButton.onClick.RemoveListener(Next);
+        }
+    }
+
+    private void Next()
+    {
+        MoveToIndex(++Index);
+    }
+
+    private void Previous()
+    {
+        MoveToIndex(--Index);
+    }
+
+    private void MoveToIndex(int index)
+    {
+        int count = tutorials.Count;
+        if (count > 0 && index < count - 1 && index >= 0)
+        {
+            Tutorial tutorial = tutorials[index];
+            titleDisplay.SetText(tutorial.title);
+            descriptionDisplay.SetText(tutorial.description);
+        }
+        else
+        {
+            titleDisplay.SetText("Tutorial");
+            descriptionDisplay.SetText("-");
+        }
+
+        if (nextButton!= null && previousButton != null)
+        {
+            nextButton.gameObject.SetActive(true);
+            nextButton.interactable = true;
+            previousButton.gameObject.SetActive(true);
+            previousButton.interactable = true;
+            closeButton.gameObject.SetActive(false);
+            if (Index <= 0)
+            {
+                previousButton.interactable = false;
+            }
+            else if (Index >= count - 1)
+            {
+                nextButton.interactable = false;
+                closeButton.gameObject.SetActive(true);
+            }
+        }
+    }
+}
